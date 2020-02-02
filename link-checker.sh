@@ -5,15 +5,16 @@ FAILED_LIST=${2}
 HEALTH_LIST=${3}
 TIMEOUT=${4}
 for EACH_LINK in $(cat ${LINK_LIST}); do
+    DOWNLOAD_LINK=$(echo ${EACH_LINK} | cut -d',' -f3)
     echo -n "+"
     if [[ ${TIMEOUT} == 0 ]]; then
-        curl -sSf "${EACH_LINK}" > /dev/null 2>&1
+        curl -sSf "${DOWNLOAD_LINK}" > /dev/null 2>&1
     else
-        curl --max-time ${TIMEOUT} -sSf "${EACH_LINK}" > /dev/null 2>&1
+        curl --max-time ${TIMEOUT} -sSf "${DOWNLOAD_LINK}" > /dev/null 2>&1
     fi
     RETURN_CODE=${?}
     if [[ ${RETURN_CODE} == 22 ]]; then
-        echo ${EACH_LINK} >> 4xx.txt
+        echo ${EACH_LINK} >> 4xx.csv
     elif [[ ${RETURN_CODE} != 0 ]]; then
         echo ${EACH_LINK} >> ${FAILED_LIST}
     elif [[ ${RETURN_CODE} == 0 ]]; then
